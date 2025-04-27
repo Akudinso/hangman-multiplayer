@@ -1,0 +1,104 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Socket.IO Hangman Test</title>
+</head>
+
+<body>
+    <h1>🔌 Hangman Multiplayer Socket Test</h1>
+
+    <input type="text" id="roomIdInput" placeholder="Enter Room ID" />
+    <button onclick="createRoom()">Create Room</button>
+    <button onclick="joinRoom()">Join Room</button>
+
+    <!-- <br /><br />
+<input type="text" id="walletInput" placeholder="Enter wallet address (0x...)" /> -->
+
+
+    <!-- <br /><br />
+    <input type="text" id="guessLetterInput" placeholder="Guess a letter" maxlength="1" />
+    <button onclick="guessLetter()">Guess</button>
+
+
+    <pre id="log" style="margin-top:20px; background:#eee; padding:10px;"></pre>
+
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script>
+        const socket = io("http://localhost:4000"); // Make sure your server is running
+
+        const log = (msg) => {
+            const el = document.getElementById("log");
+            el.innerText += msg + "\n";
+        };
+
+        socket.on("connect", () => {
+            log("✅ Connected to Socket.IO server");
+
+            // 👇 Add this line below
+            const wallet = prompt("Enter your wallet address (for testing)");
+            socket.emit("register_wallet", { wallet });
+        });
+
+
+        socket.on("disconnect", () => {
+            log("❌ Disconnected");
+        });
+
+        socket.on("room_created", (data) => {
+            log("🏠 Room created: " + JSON.stringify(data));
+        });
+
+        socket.on("game_started", (data) => {
+            log("🚀 Game started: " + JSON.stringify(data));
+        });
+
+        socket.on("error", (data) => {
+            log("⚠️ Error: " + data.message);
+        });
+
+        socket.on("game_update", (data) => {
+            log("🎯 Game Update: " + JSON.stringify(data));
+            if (data.gameOver) {
+                if (data.status === "won") {
+                    log(`🏆 You won the game!`);
+                } else if (data.status === "lost") {
+                    log("💀 You lost the game.");
+                }
+
+                log("🔤 The word was: " + data.word);
+            }
+
+        });
+
+        socket.emit("get_leaderboard");
+        socket.on("leaderboard_data", (data) => {
+            console.log("📊 Leaderboard:", data);
+        });
+
+
+
+
+        function createRoom() {
+            const roomId = document.getElementById("roomIdInput").value;
+            socket.emit("create_room", { roomId });
+            log("📩 Sent create_room for " + roomId);
+        }
+
+        function joinRoom() {
+            const roomId = document.getElementById("roomIdInput").value;
+            socket.emit("join_room", { roomId });
+            log("📩 Sent join_room for " + roomId);
+        }
+
+        function guessLetter() {
+            const letter = document.getElementById("guessLetterInput").value;
+            socket.emit("guess_letter", { roomId: roomIdInput.value, letter });
+            log("📩 Sent guess_letter: " + letter);
+        }
+
+    </script>
+</body> -->
+
+<!-- </html> --> -->
