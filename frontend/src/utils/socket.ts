@@ -1,5 +1,5 @@
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 
-const socket = io("https://hangman-multiplayer.onrender.com"); // Update if deploying backend
+// const socket = io("https://hangman-multiplayer.onrender.com"); // Update if deploying backend
 
-export default socket;
+// export default socket;
