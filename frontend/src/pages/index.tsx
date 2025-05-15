@@ -12,7 +12,8 @@ export default function WordBitWelcome() {
     if (address) {
       router.push("/singleplayer/game-mode-selection");
     }
-  }, [address]);
+  }, [address, router]); // ✅ warning resolved
+  
 
   useEffect(() => {
     document.title = "WordBit - Welcome";

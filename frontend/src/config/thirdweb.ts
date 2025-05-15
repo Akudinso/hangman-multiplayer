@@ -4,7 +4,14 @@ import { ethers } from "ethers";
 
 let sdk: ThirdwebSDK | undefined = undefined;
 
-if (typeof window !== "undefined" && (window as any).ethereum) {
+declare global {
+    interface Window {
+      ethereum?: any; // Or use a specific MetaMask type
+    }
+  }
+  
+  if (typeof window !== "undefined" && window.ethereum)
+   {
   const provider = new ethers.providers.Web3Provider((window as any).ethereum);
   sdk = new ThirdwebSDK(provider);
 }

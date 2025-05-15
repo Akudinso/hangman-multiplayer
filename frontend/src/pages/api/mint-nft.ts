@@ -25,8 +25,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log(`🎁 NFT sent to ${address}`, tx);
 
     return res.status(200).json({ success: true, tx });
-  } catch (error: any) {
-    console.error("❌ NFT mint error:", error);
-    return res.status(500).json({ error: error.message || "Minting failed" });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Mint error:", error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
   }
+  
 }
