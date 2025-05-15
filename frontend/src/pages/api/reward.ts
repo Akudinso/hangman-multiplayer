@@ -15,6 +15,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method !== "POST") return res.status(405).end();
 
   const { address, difficulty } = req.body;
+  console.log("📩 Reward API hit for:", address, "Difficulty:", difficulty);
+
 
   if (!address || !difficulty) return res.status(400).json({ error: "Missing data" });
 

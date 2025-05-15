@@ -1,15 +1,45 @@
-// src/data/wordBank.ts
-
-export const wordBank = [
-    { word: "blockchain", hint: "A decentralized digital ledger" },
-    { word: "ethereum", hint: "A popular smart contract platform" },
-    { word: "wallet", hint: "A tool to manage your crypto assets" },
-    { word: "token", hint: "A unit of value on a blockchain" },
-    { word: "nft", hint: "A unique digital asset" },
-    { word: "gas", hint: "Fees paid to perform operations on-chain" },
-    { word: "dapp", hint: "An app built on a decentralized network" },
-    { word: "mining", hint: "The process of validating blockchain transactions" },
-    { word: "ledger", hint: "Record-keeping system for transactions" },
-    { word: "smart", hint: "First word in a contract that executes logic" }
-  ];
+export const wordBank = {
+    easy: [
+      { word: "cat", hint: "A common pet that purrs." },
+      { word: "sun", hint: "It rises in the east." },
+      { word: "book", hint: "You read it." },
+      { word: "tree", hint: "Has leaves and grows tall." },
+      { word: "ball", hint: "You kick it in football." },
+      { word: "cup", hint: "Used to drink tea." },
+      { word: "pen", hint: "Used to write." },
+      { word: "dog", hint: "Man’s best friend." },
+      { word: "fish", hint: "Swims in water." },
+      { word: "hat", hint: "Worn on the head." },
+      { word: "milk", hint: "White liquid from cows." },
+      { word: "shoe", hint: "Worn on your feet." },
+    ],
+    medium: [
+      { word: "puzzle", hint: "A brain-teasing challenge." },
+      { word: "planet", hint: "Earth is one." },
+      { word: "guitar", hint: "A stringed instrument." },
+      { word: "banana", hint: "A yellow fruit." },
+      { word: "jungle", hint: "A dense forest." },
+      { word: "window", hint: "You see through it." },
+      { word: "rocket", hint: "Used to go to space." },
+      { word: "bottle", hint: "Holds water or drink." },
+      { word: "magnet", hint: "Attracts metal." },
+      { word: "castle", hint: "A medieval fortress." },
+      { word: "ladder", hint: "Used to climb." },
+      { word: "cheese", hint: "Made from milk." },
+    ],
+    hard: [
+      { word: "oxygen", hint: "We breathe it." },
+      { word: "quantum", hint: "Physics term for small particles." },
+      { word: "tsunami", hint: "A huge sea wave." },
+      { word: "encrypt", hint: "To encode data." },
+      { word: "zephyr", hint: "A soft breeze." },
+      { word: "matrix", hint: "A grid or movie." },
+      { word: "nebula", hint: "A cloud in space." },
+      { word: "python", hint: "A programming language or snake." },
+      { word: "galaxy", hint: "Contains stars and planets." },
+      { word: "horizon", hint: "Where the sky meets the earth." },
+      { word: "asteroid", hint: "A rock in space." },
+      { word: "vortex", hint: "A spinning mass." },
+    ],
+  };
   

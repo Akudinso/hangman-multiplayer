@@ -24,7 +24,8 @@ const PlayScreen = () => {
     const maxAttempts = 6;
 
     const getRandomWord = () => {
-        const random = wordBank[Math.floor(Math.random() * wordBank.length)];
+        const wordsForDifficulty = wordBank[difficulty as "easy" | "medium" | "hard"];
+        const random = wordsForDifficulty[Math.floor(Math.random() * wordsForDifficulty.length)];
         setTargetWord(random.word.toLowerCase());
         setHint(random.hint);
         setGuessedLetters([]);
@@ -32,7 +33,8 @@ const PlayScreen = () => {
         setTimeLeft(60);
         setGameOver(false);
         setStatus(null);
-    };
+      };
+      
 
     const fetchBalance = useCallback(async () => {
         if (!address || !sdk) return;
@@ -60,6 +62,7 @@ const PlayScreen = () => {
         if (!address) return;
       
         try {
+            console.log("🚀 Attempting reward for", address, "with difficulty", difficulty);
           const res = await fetch("/api/reward", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -69,7 +72,7 @@ const PlayScreen = () => {
           const data = await res.json();
           if (res.ok) {
             console.log(`✅ Rewarded ${data.amount} tokens`);
-            fetchBalance();
+            await fetchBalance();
           } else {
             console.warn("Reward error", data.error);
           }
@@ -295,6 +298,7 @@ const PlayScreen = () => {
                     correct={targetWord.split("").filter((char) => guessedLetters.includes(char)).length}
                     total={targetWord.length}
                     reward={difficulty === "easy" ? 3 : difficulty === "medium" ? 6 : 9}
+                    gameStatus={status as "win" | "lose"}
                     onHome={handleHome}
                     onNext={handleNext}
                 // status={status}
