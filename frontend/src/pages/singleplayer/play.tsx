@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { wordBank } from "@/data/wordBank";
 import confetti from "canvas-confetti";
 import { useAddress } from "@thirdweb-dev/react";
+import { ConnectWallet } from "@thirdweb-dev/react";
 import { sdk } from "@/config/thirdweb";
 import GameOverModal from "@/components/GameOverModal";
 
@@ -20,6 +21,8 @@ const PlayScreen = () => {
     const [attempts, setAttempts] = useState(0);
     const [timeLeft, setTimeLeft] = useState(60);
     const [balance, setBalance] = useState("0");
+    const [wordRevealed, setWordRevealed] = useState(false);
+
 
     const maxAttempts = 6;
 
@@ -33,8 +36,8 @@ const PlayScreen = () => {
         setTimeLeft(60);
         setGameOver(false);
         setStatus(null);
-      };
-      
+    };
+
 
     const fetchBalance = useCallback(async () => {
         if (!address || !sdk) return;
@@ -53,48 +56,48 @@ const PlayScreen = () => {
         const key = `completed_${difficulty}`;
         const existing = JSON.parse(localStorage.getItem(key) || "[]");
         if (!existing.includes(level)) {
-          localStorage.setItem(key, JSON.stringify([...existing, level]));
+            localStorage.setItem(key, JSON.stringify([...existing, level]));
         }
-      }, [difficulty, level]);
-      
+    }, [difficulty, level]);
 
-      const rewardPlayer = useCallback(async () => {
+
+    const rewardPlayer = useCallback(async () => {
         if (!address) return;
-      
+
         try {
             console.log("🚀 Attempting reward for", address, "with difficulty", difficulty);
-          const res = await fetch("/api/reward", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ address, difficulty }),
-          });
-      
-          const data = await res.json();
-          if (res.ok) {
-            console.log(`✅ Rewarded ${data.amount} tokens`);
-            await fetchBalance();
-          } else {
-            console.warn("Reward error", data.error);
-          }
-        } catch (err) {
-          console.error("Reward failed", err);
-        }
-      }, [address, difficulty]);
-      
+            const res = await fetch("/api/reward", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ address, difficulty }),
+            });
 
-      const mintNFTIfNeeded = useCallback(() => {
+            const data = await res.json();
+            if (res.ok) {
+                console.log(`✅ Rewarded ${data.amount} tokens`);
+                await fetchBalance();
+            } else {
+                console.warn("Reward error", data.error);
+            }
+        } catch (err) {
+            console.error("Reward failed", err);
+        }
+    }, [address, difficulty]);
+
+
+    const mintNFTIfNeeded = useCallback(() => {
         const key = `completed_${difficulty}`;
         const completedLevels = JSON.parse(localStorage.getItem(key) || "[]");
-      
+
         if (completedLevels.length % 10 === 0) {
-          fetch("/api/mint-nft", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ address }),
-          });
+            fetch("/api/mint-nft", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ address }),
+            });
         }
-      }, [difficulty, address]);
-      
+    }, [difficulty, address]);
+
 
     useEffect(() => {
         getRandomWord();
@@ -127,25 +130,25 @@ const PlayScreen = () => {
     };
 
     useEffect(() => {
-        if (!targetWord) return;
+        if (!targetWord || wordRevealed) return;
         const allGuessed = targetWord.split("").every((char) => guessedLetters.includes(char));
-      
+
         if (attempts >= maxAttempts && !gameOver) {
-          setStatus("lose");
-          setGameOver(true);
+            setStatus("lose");
+            setGameOver(true);
         } else if (allGuessed && !gameOver) {
-          setStatus("win");
-          setGameOver(true);
-          confetti();
-          saveLevelProgress();
-          rewardPlayer();
-          mintNFTIfNeeded();
-      
-          setTimeout(() => {
-            router.push(`/singleplayer/level-selection?difficulty=${difficulty}`);
-          }, 2000);
+            setStatus("win");
+            setGameOver(true);
+            confetti();
+            saveLevelProgress();
+            rewardPlayer();
+            mintNFTIfNeeded();
+
+            setTimeout(() => {
+                router.push(`/singleplayer/level-selection?difficulty=${difficulty}`);
+            }, 2000);
         }
-      }, [
+    }, [
         attempts,
         guessedLetters,
         gameOver,
@@ -155,11 +158,30 @@ const PlayScreen = () => {
         rewardPlayer,
         saveLevelProgress,
         mintNFTIfNeeded,
-      ]);
-      
+        wordRevealed,
+    ]);
 
 
-    const handleReveal = () => getRandomWord();
+
+    const handleReveal = () => {
+        if (!targetWord) return;
+
+        setWordRevealed(true); // ✅ Set flag
+        setGuessedLetters(targetWord.split(""));
+
+        const key = `completed_${difficulty}`;
+        const existing = JSON.parse(localStorage.getItem(key) || "[]");
+        if (!existing.includes(level)) {
+            localStorage.setItem(key, JSON.stringify([...existing, level]));
+        }
+
+        setTimeout(() => {
+            router.push(`/singleplayer/level-selection?difficulty=${difficulty}`);
+        }, 1500);
+    };
+
+
+
     const handleSkip = () => getRandomWord();
 
     const keyboard = "abcdefghijklmnopqrstuvwxyz".split("");
@@ -206,9 +228,21 @@ const PlayScreen = () => {
                     <p>⏱️ {timeLeft}s</p>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                    <div style={{ border: "1px solid #4D6947", padding: "8px 16px", borderRadius: "86px" }}>
-                        {address ? address.slice(0, 6) + "..." + address.slice(-4) : "Not Connected"}
-                    </div>
+                    <ConnectWallet
+                        theme="dark"
+                        btnTitle="Connect Wallet"
+                        modalTitle="Login to WordBit"
+                        style={{
+                            backgroundColor: "#1F1F1F",
+                            color: "#fff",
+                            borderRadius: "12px",
+                            padding: "8px 16px",
+                            fontWeight: "bold",
+                            fontSize: "14px",
+                            border: "1px solid #4D6947",
+                        }}
+                    />
+
                     <p>🪙 {balance || "0"} WB</p>
                 </div>
             </div>
@@ -292,7 +326,7 @@ const PlayScreen = () => {
 
 
             {/* Game Over Modal */}
-            {gameOver && (
+            {gameOver && !wordRevealed && (
                 <GameOverModal
                     isOpen={gameOver}
                     correct={targetWord.split("").filter((char) => guessedLetters.includes(char)).length}
@@ -301,7 +335,6 @@ const PlayScreen = () => {
                     gameStatus={status as "win" | "lose"}
                     onHome={handleHome}
                     onNext={handleNext}
-                // status={status}
                 />
             )}
         </div>

@@ -1,7 +1,29 @@
 // components/HeaderBar.tsx
-import { ConnectWallet } from "@thirdweb-dev/react";
+import { ConnectWallet, useAddress } from "@thirdweb-dev/react";
+import { useEffect, useState } from "react";
+import { sdk } from "@/config/thirdweb";
 
 const HeaderBar = () => {
+  const address = useAddress();
+  const [balance, setBalance] = useState("0");
+
+  const fetchBalance = async () => {
+    if (!address || !sdk) return;
+
+    try {
+      const tokenAddress = process.env.NEXT_PUBLIC_TOKEN_CONTRACT!;
+      const token = await sdk.getContract(tokenAddress, "token");
+      const result = await token.erc20.balanceOf(address);
+      setBalance(result.displayValue);
+    } catch (error) {
+      console.error("Failed to fetch balance:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBalance();
+  }, [fetchBalance]);
+
   return (
     <div
       style={{
@@ -30,7 +52,6 @@ const HeaderBar = () => {
 
       {/* Connect Wallet & Balance */}
       <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-        {/* ✅ Thirdweb's built-in connect wallet button */}
         <ConnectWallet
           theme="dark"
           btnTitle="Connect Wallet"
@@ -45,9 +66,7 @@ const HeaderBar = () => {
             fontSize: "14px",
           }}
         />
-
-        {/* Token Balance placeholder */}
-        <div style={{ color: "#FFD700", fontWeight: "bold" }}>💰 0.0 WB</div>
+        <div style={{ color: "#ffffff", fontWeight: "bold" }}>🪙 {balance} WB</div>
       </div>
     </div>
   );
