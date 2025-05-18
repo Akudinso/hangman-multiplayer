@@ -1,15 +1,18 @@
 // components/HeaderBar.tsx
 import { ConnectWallet, useAddress } from "@thirdweb-dev/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { sdk } from "@/config/thirdweb";
 
 const HeaderBar = () => {
   const address = useAddress();
   const [balance, setBalance] = useState("0");
 
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Fetch token balance
   const fetchBalance = async () => {
     if (!address || !sdk) return;
-
     try {
       const tokenAddress = process.env.NEXT_PUBLIC_TOKEN_CONTRACT!;
       const token = await sdk.getContract(tokenAddress, "token");
@@ -22,7 +25,25 @@ const HeaderBar = () => {
 
   useEffect(() => {
     fetchBalance();
-  }, [fetchBalance]);
+  }, [address]);
+
+  // Load and play/pause music
+  useEffect(() => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio("/background-music.mp3");
+      audioRef.current.loop = true;
+      audioRef.current.volume = 0.4;
+    }
+
+    if (isPlaying) {
+      audioRef.current.play().catch((err) => console.error("Audio play failed:", err));
+    } else {
+      audioRef.current.pause();
+    }
+  }, [isPlaying]);
+
+  // Toggle music
+  const toggleSound = () => setIsPlaying((prev) => !prev);
 
   return (
     <div
@@ -35,8 +56,9 @@ const HeaderBar = () => {
         marginBottom: "2rem",
       }}
     >
-      {/* 🔊 Speaker Icon */}
+      {/* 🔊 Speaker Icon Toggle */}
       <div
+        onClick={toggleSound}
         style={{
           width: "60px",
           height: "60px",
@@ -45,12 +67,14 @@ const HeaderBar = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          cursor: "pointer",
         }}
+        title={isPlaying ? "Mute Music" : "Play Music"}
       >
-        🔊
+        {isPlaying ? "🔊" : "🔇"}
       </div>
 
-      {/* Connect Wallet & Balance */}
+      {/* Wallet and Token Display */}
       <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
         <ConnectWallet
           theme="dark"

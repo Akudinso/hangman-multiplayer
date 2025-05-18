@@ -28,3 +28,19 @@ body .logo-title {
   color: #111111; /* Dark text in light mode */
 }
 
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px #A259FF66, 0 0 20px #A259FF44;
+  }
+  to {
+    text-shadow: 0 0 20px #A259FFAA, 0 0 30px #A259FF99;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+

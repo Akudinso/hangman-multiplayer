@@ -131,7 +131,11 @@ const PlayScreen = () => {
 
     useEffect(() => {
         if (!targetWord || wordRevealed) return;
-        const allGuessed = targetWord.split("").every((char) => guessedLetters.includes(char));
+        // Ignore spaces in win condition
+        const allGuessed = targetWord
+            .split("")
+            .filter((char) => char !== " ")
+            .every((char) => guessedLetters.includes(char));
 
         if (attempts >= maxAttempts && !gameOver) {
             setStatus("lose");
@@ -186,28 +190,33 @@ const PlayScreen = () => {
 
     const keyboard = "abcdefghijklmnopqrstuvwxyz".split("");
 
-    const renderWord = () =>
-        targetWord.split("").map((char, idx) => (
-            <span
-                key={idx}
-                style={{
-                    width: "40px",
-                    height: "60px",
-                    borderBottom: "3px solid #A259FF",
-                    margin: "0 8px",
-                    fontSize: "32px",
-                    textAlign: "center",
-                    lineHeight: "60px",
-                    display: "inline-block",
-                    color: "#fff",
-                    fontFamily: "Athletics",
-                    letterSpacing: "2px",
-                }}
-            >
-                {guessedLetters.includes(char) ? char.toUpperCase() : ""}
-            </span>
-
+    const renderWord = () => {
+        return targetWord.split(" ").map((word, wordIdx) => (
+            <div key={wordIdx} style={{ display: "inline-block", marginRight: "24px" }}>
+                {word.split("").map((char, idx) => (
+                    <span
+                        key={`${wordIdx}-${idx}`}
+                        style={{
+                            width: "40px",
+                            height: "60px",
+                            borderBottom: "3px solid #A259FF",
+                            margin: "0 6px",
+                            fontSize: "32px",
+                            textAlign: "center",
+                            lineHeight: "60px",
+                            display: "inline-block",
+                            color: "#fff",
+                            fontFamily: "Athletics",
+                            letterSpacing: "2px",
+                        }}
+                    >
+                        {guessedLetters.includes(char) ? char.toUpperCase() : ""}
+                    </span>
+                ))}
+            </div>
         ));
+    };
+
 
     const handleNext = () => {
         router.push(`/singleplayer/level-selection?difficulty=${difficulty}`);

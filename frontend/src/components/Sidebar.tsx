@@ -1,11 +1,25 @@
 // components/Sidebar.tsx
 import React from "react";
+import { useRouter } from "next/router";
+import Image from "next/image";
 
 type SidebarProps = {
   onLogout?: () => void;
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
+  const router = useRouter();
+
+  const navigate = (path: string) => router.push(path);
+
+  const buttonList = [
+    { label: "▶ Play", path: "/singleplayer/difficulty-selection" },
+    { label: "📦 Inventory", path: "/inventory" },
+    { label: "🎴 Source NFTs", path: "/source-nfts" },
+    { label: "🏆 Leaderboard", path: "/leaderboard" },
+    { label: "❓ How to Play", path: "/how-to-play" },
+  ];
+
   return (
     <div
       style={{
@@ -20,14 +34,38 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
         justifyContent: "space-between",
       }}
     >
-      {/* Top Navigation */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <div style={{ width: "219px", height: "40px", backgroundColor: "#333", borderRadius: "8px" }} /> {/* Logo placeholder */}
-        <button style={navButtonStyle()}>▶ Play</button>
-        <button style={navButtonStyle()}>📦 Inventory</button>
-        <button style={navButtonStyle()}>🎴 Source NFTs</button>
-        <button style={navButtonStyle()}>🏆 Leaderboard</button>
-        <button style={navButtonStyle()}>❓ How to Play</button>
+      {/* Logo and Navigation */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        {/* ✅ WordBit Logo */}
+        <div style={{ textAlign: "center" }}>
+          <Image
+            src="/Wordbit-logo.png"
+            alt="WordBit Logo"
+            width={180}
+            height={40}
+            style={{ objectFit: "contain" }}
+            priority
+          />
+        </div>
+
+        {/* Navigation Buttons */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "12px" }}>
+          {buttonList.map((btn, index) => (
+            <button
+              key={index}
+              onClick={() => navigate(btn.path)}
+              style={navButtonStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "linear-gradient(90deg, #DFD4C0 0%, #C2B9AA 50%, #908A7E 100%)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+              }}
+            >
+              {btn.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Logout Button */}
@@ -51,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
   );
 };
 
-const navButtonStyle = () => ({
+const navButtonStyle: React.CSSProperties = {
   width: "190px",
   height: "52px",
   padding: "12px 4px",
@@ -60,9 +98,10 @@ const navButtonStyle = () => ({
   color: "#fff",
   fontWeight: 500,
   fontSize: "16px",
-  textAlign: "left" as const,
-  border: "1px solid #444",
+  textAlign: "left",
+  border: "none",
   cursor: "pointer",
-});
+  transition: "background 0.3s ease",
+};
 
 export default Sidebar;
