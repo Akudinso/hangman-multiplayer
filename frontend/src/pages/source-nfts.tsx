@@ -7,6 +7,8 @@ import HelpIcon from "@/components/HelpIcon";
 import { useAddress } from "@thirdweb-dev/react";
 import { sdk } from "@/config/thirdweb";
 import { useRouter } from "next/router";
+import MintSuccessModal from "@/components/MintSuccessModal";
+
 
 const nftList = [
   {
@@ -58,6 +60,9 @@ export default function SourceNFTsPage() {
   const router = useRouter();
   const [balance, setBalance] = useState(0);
   const [minting, setMinting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+const [txHash, setTxHash] = useState("");
+
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -85,8 +90,13 @@ export default function SourceNFTsPage() {
         .then((res) => res.json())
         .then((data) => {
           setMinting(false);
-          if (data.success) alert("NFT Minted!");
-          else alert("Mint failed: " + data.error);
+          if (data.success) {
+            setTxHash(data.txHash); // make sure the API returns txHash
+            setShowModal(true);
+          } else {
+            alert("Mint failed: " + data.error);
+          }
+          
         });
     } else {
       router.push(`/singleplayer/level-selection?difficulty=${nft.difficulty}`);
@@ -149,6 +159,9 @@ export default function SourceNFTsPage() {
             </div>
           ))}
         </div>
+
+        <MintSuccessModal isOpen={showModal} onClose={() => setShowModal(false)} txHash={txHash} />
+
 
         <HelpIcon />
       </div>

@@ -30,6 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({
       success: true,
       message: `NFT successfully minted to ${address}`,
+      txHash: tx[0].receipt.transactionHash, // ✅ returning txHash
       transaction: tx,
     });
   } catch (error: any) {
